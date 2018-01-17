@@ -1,0 +1,3 @@
+* mongod doesn't actually start when we `RUN service mongod start`
+* thumbs are expected in /static/thumbs.  Make symlink?
+* make sure we're actually using OpenBLAS in numpy.  I'm not convinced the original Dockerfile does that...
