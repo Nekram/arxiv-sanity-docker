@@ -1,0 +1,4 @@
+arxiv-sanity-preserver/data
+arxiv-sanity-preserver/*.db
+arxiv-sanity-preserver/*.p
+arxiv-sanity-preserver/__pycache__
