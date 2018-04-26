@@ -18,16 +18,16 @@ RUN sudo apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10 &&\
     echo 'deb http://downloads-distro.mongodb.org/repo/debian-sysvinit dist 10gen' | sudo tee /etc/apt/sources.list.d/mongodb.list &&\
     sudo apt-get update -y &&\
     sudo apt-get install -y mongodb-org
-RUN service mongod start
-
-# Create user that runs the stuff
-ENV USER=arxiv
-RUN useradd -m -s /bin/bash $USER
 
 # Install python packages
 COPY arxiv-sanity-preserver/requirements.txt /home/$USER/arxiv-sanity-requirements.txt
 RUN pip install --no-cache-dir -r /home/$USER/arxiv-sanity-requirements.txt &&\
     rm /home/$USER/arxiv-sanity-requirements.txt
+
+# Create user that runs the stuff
+ENV USER=arxiv
+ENV PASS=arxiv
+RUN useradd -m -s /bin/bash -G sudo $USER && echo "$USER:$PASS" | chpasswd
 
 # Add the arxiv-sanity repo to the container
 ADD arxiv-sanity-preserver /home/$USER/arxiv-sanity-preserver
@@ -38,7 +38,7 @@ RUN mkdir -p /data/arxiv-sanity
 
 EXPOSE 6785
 
-#USER $USER
-WORKDIR /home/$USER
-#CMD ["python", "serve.py", "--prod", "--port", "6785"]
+USER $USER
+WORKDIR /home/$USER/arxiv-sanity-preserver
+#CMD ["serve.sh"]
 CMD ["/bin/bash"]
